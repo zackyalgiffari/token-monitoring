@@ -3,7 +3,7 @@ use serde_json::Value;
 use std::collections::HashSet;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
-use rusqlite::{params, Connection};
+use rusqlite::Connection;
 
 use crate::parsers::claude::event_id;
 use crate::pricing::PricingTable;

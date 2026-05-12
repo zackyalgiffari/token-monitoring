@@ -92,7 +92,7 @@ async fn initial_backfill(
     db: &DbState,
     pricing: &PricingTable,
     claude_dir: &PathBuf,
-    codex_dir: &PathBuf,
+    _codex_dir: &PathBuf,
 ) {
     use parsers::claude::ClaudeParser;
     use tauri::Emitter;

@@ -3,7 +3,7 @@ use tauri::{AppHandle, Emitter};
 use tauri_plugin_notification::NotificationExt;
 
 use crate::store::db::Db;
-use crate::store::schema::{AlertFired, Budget, BudgetPeriod};
+use crate::store::schema::{AlertFired, BudgetPeriod};
 
 pub struct AlertEngine {
     // budget_id → last-fired day (YYYY-MM-DD) to avoid re-firing same day
