@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.tauri.app/schema/capabilities/2/capability.json",
+  "identifier": "default",
+  "description": "Read-only access to Claude Code and Codex log directories",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:event:default",
+    "core:window:default",
+    "core:app:default",
+    "core:tray:default",
+    {
+      "identifier": "fs:read-all",
+      "allow": [
+        { "path": "$HOME/.claude/**" },
+        { "path": "$HOME/.codex/**" },
+        { "path": "$APPDATA/token-monitoring/**" }
+      ]
+    },
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        { "path": "$HOME/.claude/**" },
+        { "path": "$HOME/.codex/**" },
+        { "path": "$APPDATA/token-monitoring/**" }
+      ]
+    },
+    "notification:default",
+    "store:default",
+    "log:default",
+    "autostart:default"
+  ]
+}

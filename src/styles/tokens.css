@@ -1,0 +1,60 @@
+:root {
+  /* Backgrounds */
+  --bg-0: #09090b;
+  --bg-1: #111114;
+  --bg-2: #16161a;
+  --bg-3: #1c1c22;
+  --grid: #222228;
+
+  /* Text */
+  --fg-0: #e2e0d8;
+  --fg-1: #9a9890;
+  --fg-2: #55534a;
+  --fg-3: #302e28;
+
+  /* Accents */
+  --amber: #ffb000;
+  --amber-dim: #996800;
+  --red: #ff3b3b;
+  --red-dim: #8b1a1a;
+  --cyan: #6cb6ff;
+  --cyan-dim: #2a5a8a;
+  --green: #00d4aa;
+  --green-dim: #006655;
+  --purple: #b08eff;
+  --orange: #ff7a59;
+
+  /* Model colors */
+  --m-opus:    #ff7a59;
+  --m-sonnet:  #ffb000;
+  --m-haiku:   #b08eff;
+  --m-gpt5:    #00d4aa;
+  --m-gpt53:   #6cb6ff;
+  --m-other:   #9a9890;
+
+  /* Borders */
+  --border: 1px solid var(--grid);
+  --border-accent: 1px solid var(--amber-dim);
+
+  /* Typography */
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-md: 12px;
+  --font-size-lg: 13px;
+  --font-size-xl: 16px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 36px;
+
+  /* Spacing */
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 12px;
+  --gap-lg: 16px;
+  --gap-xl: 24px;
+
+  /* Ticker bar height */
+  --ticker-h: 32px;
+  --status-h: 24px;
+  --nav-w: 48px;
+}
