@@ -1,0 +1,11 @@
+# Node
+node_modules/
+
+# Rust build artifacts
+src-tauri/target/
+
+# Tauri generated schemas (regenerated on build)
+src-tauri/gen/schemas/
+
+# Vite build output
+dist/
