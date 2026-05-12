@@ -3,9 +3,10 @@ import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { useMetricsStore } from '../state/useMetricsStore';
 import { modelColor, modelShort } from '../lib/format';
+import type { UsageEvent } from '../lib/ipc';
 
-const WINDOW_MS = 60 * 60 * 1000; // 60 minutes rolling
-const BUCKET_MS = 60 * 1000;       // 1-minute buckets
+const WINDOW_MS = 60 * 60 * 1000;
+const BUCKET_MS = 60 * 1000;
 
 export function BurnRateChart() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,7 +22,7 @@ export function BurnRateChart() {
 
     const seriesDefs: uPlot.Series[] = [
       {},
-      ...models.map((model) => ({
+      ...models.map((model: string) => ({
         label: modelShort(model),
         stroke: modelColor(model),
         fill: modelColor(model).replace(')', ', 0.08)').replace('var', 'rgba'),
@@ -41,7 +42,7 @@ export function BurnRateChart() {
           ticks: { stroke: 'var(--grid)', width: 1 },
           grid: { stroke: 'var(--grid)', width: 1 },
           font: '10px JetBrains Mono',
-          values: (_self, ticks) => ticks.map(t => fmtAxisTime(t)),
+          values: (_self, ticks) => ticks.map((t) => fmtAxisTime(t)),
         },
         {
           stroke: 'var(--fg-2)',
@@ -49,22 +50,15 @@ export function BurnRateChart() {
           grid: { stroke: 'var(--grid)', width: 1 },
           font: '10px JetBrains Mono',
           size: 55,
-          values: (_self, ticks) => ticks.map(t => `${t.toFixed(0)}K`),
+          values: (_self, ticks) => ticks.map((t) => `${t.toFixed(0)}K`),
         },
       ],
       scales: { x: { time: true }, y: { auto: true } },
       series: seriesDefs,
     };
 
-    const data: uPlot.AlignedData = [
-      timestamps,
-      ...series,
-    ];
-
-    if (uplotRef.current) {
-      uplotRef.current.destroy();
-    }
-    uplotRef.current = new uPlot(opts, data, containerRef.current);
+    if (uplotRef.current) uplotRef.current.destroy();
+    uplotRef.current = new uPlot(opts, [timestamps, ...series], containerRef.current);
 
     return () => {
       uplotRef.current?.destroy();
@@ -72,12 +66,10 @@ export function BurnRateChart() {
     };
   }, [recentEvents]);
 
-  return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%', overflow: 'hidden' }} />
-  );
+  return <div ref={containerRef} style={{ width: '100%', height: '100%', overflow: 'hidden' }} />;
 }
 
-function buildSeries(events: ReturnType<typeof useMetricsStore>['recentEvents']) {
+function buildSeries(events: UsageEvent[]) {
   const now = Date.now();
   const windowStart = now - WINDOW_MS;
   const windowEvents = events.filter((e) => e.timestamp_ms >= windowStart);
@@ -98,8 +90,7 @@ function buildSeries(events: ReturnType<typeof useMetricsStore>['recentEvents'])
       const bucket = modelEvents.filter(
         (e) => e.timestamp_ms >= bucket_start && e.timestamp_ms < bucket_end
       );
-      const total = bucket.reduce((sum, e) => sum + e.input_tokens + e.output_tokens, 0);
-      return total / 1000; // display in K
+      return bucket.reduce((sum, e) => sum + e.input_tokens + e.output_tokens, 0) / 1000;
     });
   });
 
@@ -107,6 +98,7 @@ function buildSeries(events: ReturnType<typeof useMetricsStore>['recentEvents'])
 }
 
 function fmtAxisTime(ts: number): string {
-  const d = new Date(ts * 1000);
-  return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false });
+  return new Date(ts * 1000).toLocaleTimeString(undefined, {
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  });
 }

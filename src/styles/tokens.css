@@ -53,8 +53,42 @@
   --gap-lg: 16px;
   --gap-xl: 24px;
 
-  /* Ticker bar height */
+  /* Layout */
   --ticker-h: 32px;
   --status-h: 24px;
   --nav-w: 48px;
+}
+
+[data-theme="light"] {
+  --bg-0: #ffffff;
+  --bg-1: #f8f8f8;
+  --bg-2: #f0f0f0;
+  --bg-3: #e8e8e8;
+  --grid: #d4d4d8;
+
+  --fg-0: #09090b;
+  --fg-1: #3f3f46;
+  --fg-2: #71717a;
+  --fg-3: #a1a1aa;
+
+  --amber: #c27c00;
+  --amber-dim: #92400e;
+  --red: #dc2626;
+  --red-dim: #991b1b;
+  --cyan: #1d6bb5;
+  --cyan-dim: #1e40af;
+  --green: #059669;
+  --green-dim: #064e3b;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+
+  --m-opus:    #ea580c;
+  --m-sonnet:  #c27c00;
+  --m-haiku:   #7c3aed;
+  --m-gpt5:    #059669;
+  --m-gpt53:   #1d6bb5;
+  --m-other:   #71717a;
+
+  --border: 1px solid var(--grid);
+  --border-accent: 1px solid var(--amber-dim);
 }

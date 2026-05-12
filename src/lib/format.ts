@@ -1,9 +1,3 @@
-export function fmtCost(usd: number, precision = 4): string {
-  if (usd === 0) return '$0.0000';
-  if (usd < 0.0001) return '<$0.0001';
-  return `$${usd.toFixed(precision)}`;
-}
-
 export function fmtTokens(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
@@ -91,4 +85,16 @@ export function monthStartMs(): number {
   d.setDate(1);
   d.setHours(0, 0, 0, 0);
   return d.getTime();
+}
+
+export function toDateInput(ms: number): string {
+  const d = new Date(ms);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+export function fromDateInput(s: string): number {
+  return new Date(s).getTime();
 }

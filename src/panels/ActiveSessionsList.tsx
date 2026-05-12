@@ -1,25 +1,29 @@
 import { useMetricsStore } from '../state/useMetricsStore';
-import { fmtCost, fmtTokens, fmtAge, modelColor, modelShort } from '../lib/format';
-import { nowHHMMSS } from '../lib/format';
+import { fmtTokens, fmtAge, modelColor, modelShort, nowHHMMSS } from '../lib/format';
+import type { UsageEvent } from '../lib/ipc';
 
-const ACTIVE_WINDOW_MS = 5 * 60 * 1000; // sessions with event in last 5m
+const ACTIVE_WINDOW_MS = 5 * 60 * 1000;
 
-export function ActiveSessionsList() {
+interface Props {
+  events?: UsageEvent[];
+}
+
+export function ActiveSessionsList({ events }: Props) {
   const { recentEvents } = useMetricsStore();
+  const source = events ?? recentEvents;
   const cutoff = Date.now() - ACTIVE_WINDOW_MS;
 
-  // Group by session
   const sessions: Record<string, {
     session_id: string;
     source: string;
     model: string;
     project: string | null;
     last_ms: number;
-    tokens: number;
-    cost: number;
+    input: number;
+    output: number;
   }> = {};
 
-  for (const ev of recentEvents) {
+  for (const ev of source) {
     if (ev.timestamp_ms < cutoff) continue;
     const s = sessions[ev.session_id];
     if (!s) {
@@ -29,12 +33,12 @@ export function ActiveSessionsList() {
         model: ev.model,
         project: ev.project,
         last_ms: ev.timestamp_ms,
-        tokens: ev.input_tokens + ev.output_tokens,
-        cost: ev.cost_usd,
+        input: ev.input_tokens,
+        output: ev.output_tokens,
       };
     } else {
-      s.tokens += ev.input_tokens + ev.output_tokens;
-      s.cost += ev.cost_usd;
+      s.input += ev.input_tokens;
+      s.output += ev.output_tokens;
       if (ev.timestamp_ms > s.last_ms) s.last_ms = ev.timestamp_ms;
     }
   }
@@ -54,8 +58,8 @@ export function ActiveSessionsList() {
               <th>Source</th>
               <th>Project</th>
               <th>Model</th>
-              <th style={{ textAlign: 'right' }}>Tokens</th>
-              <th style={{ textAlign: 'right' }}>Cost</th>
+              <th style={{ textAlign: 'right' }}>Input</th>
+              <th style={{ textAlign: 'right' }}>Output</th>
               <th style={{ textAlign: 'right' }}>Last</th>
             </tr>
           </thead>
@@ -63,9 +67,7 @@ export function ActiveSessionsList() {
             {sorted.map((s) => (
               <tr key={s.session_id}>
                 <td>
-                  <span className={`badge badge-${s.source.toLowerCase()}`}>
-                    {s.source}
-                  </span>
+                  <span className={`badge badge-${s.source.toLowerCase()}`}>{s.source}</span>
                 </td>
                 <td style={{ color: 'var(--fg-1)', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {s.project ?? '—'}
@@ -76,10 +78,8 @@ export function ActiveSessionsList() {
                     {modelShort(s.model)}
                   </span>
                 </td>
-                <td style={{ textAlign: 'right', color: 'var(--fg-1)' }}>{fmtTokens(s.tokens)}</td>
-                <td style={{ textAlign: 'right', color: 'var(--amber)', fontWeight: 600 }}>
-                  {fmtCost(s.cost, 4)}
-                </td>
+                <td style={{ textAlign: 'right', color: 'var(--fg-1)' }}>{fmtTokens(s.input)}</td>
+                <td style={{ textAlign: 'right', color: 'var(--cyan)' }}>{fmtTokens(s.output)}</td>
                 <td style={{ textAlign: 'right', color: 'var(--fg-2)', fontSize: 'var(--font-size-xs)' }}>
                   {fmtAge(s.last_ms)}
                 </td>
